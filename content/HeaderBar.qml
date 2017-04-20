@@ -27,6 +27,12 @@ BorderImage {
             id: backmouse
             anchors.fill: parent
             anchors.margins: -10
+            
+            onClicked: {
+              stackView.pop();
+              directoryPage.reset();
+              headerBar.visible = false;
+            }
         }
     }
 

@@ -15,3 +15,4 @@ This will build an executable file called `quickPhone`
 ## Customize for your needs
 
 Replace the logo located in img/logo_white_text.png with your own.
+Replace users from userList.json with your own.

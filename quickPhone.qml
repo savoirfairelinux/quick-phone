@@ -1,6 +1,7 @@
 import QtQuick 2.1
 import QtQuick.Controls 1.0
 import "content"
+import "app.js" as JS
 
 ApplicationWindow {
     id: appWindow
@@ -27,5 +28,14 @@ ApplicationWindow {
         HomePage {
           id: homePage
         }
+        DirectoryPage {
+          id: directoryPage
+        }
     }
+
+    ListModel {
+      id: userListModel
+    }
+
+    Component.onCompleted: JS.load();
 }

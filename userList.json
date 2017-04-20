@@ -1,0 +1,21 @@
+[{
+  "name": "Albert Einstein",
+  "jobTitle": "Physicien",
+  "team": "Physique théorique",
+  "ext": "001"
+},{
+  "name": "Alan Turing",
+  "jobTitle": "Mathématicien",
+  "team": "Informatique",
+  "ext": "002"
+},{
+  "name": "Isaac Newton",
+  "jobTitle": "Physicien",
+  "team": "Gravitation universelle",
+  "ext": "003"
+},{
+  "name": "Marie Curie",
+  "jobTitle": "Chimiste",
+  "team": "Recherche appliquée",
+  "ext": "004"
+}]

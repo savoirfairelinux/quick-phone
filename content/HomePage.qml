@@ -7,6 +7,14 @@ Component {
     anchors.fill: parent
     color: "#000000"
 
+    MouseArea {
+      anchors.fill: parent
+      onClicked: {
+        stackView.push(directoryPage);
+        headerBar.visible = true;
+      }
+    }
+
     Column {
       anchors.fill: parent
       spacing: 30
