@@ -25,3 +25,37 @@ function loaded(userList) {
     })
   })
 }
+
+var component;
+
+function createContactCard(name, ext, jobTitle, team, pictureLocation) {
+  if (component == null) {
+    component = Qt.createComponent("./content/UserContactCard.qml");
+  }
+
+  if (component.status == Component.Ready) {
+    var dynamicObject = component.createObject(appWindow);
+
+    if (dynamicObject == null) {
+      console.log("error creating contactCard");
+      console.log(component.errorString());
+      return false;
+    }
+    dynamicObject.name = name;
+    dynamicObject.ext = ext;
+    dynamicObject.jobTitle = jobTitle;
+    dynamicObject.team = team;
+    dynamicObject.pictureLocation = pictureLocation;
+
+
+  } else {
+    console.info("error loading contactCard component");
+    console.log(component.errorString());
+    return false;
+  }
+  return true;
+}
+
+function deleteContactCard(contactCard) {
+  contactCard.destroy();
+}

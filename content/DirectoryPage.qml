@@ -17,7 +17,10 @@ Item {
       width: parent.width - 30
       username: "Accueil"
       userphone: "000"
-      onClicked: console.info("clicked on Accueil");
+      onClicked: {
+        // Load UserContactCard Component
+        JS.createContactCard("Accueil", "374", "", "", "./img/reception_contact_picture.png");
+      }
     }
 
     ScrollView {
@@ -37,7 +40,10 @@ Item {
         delegate: UserContactItem {
           username: name
           userphone: ext
-          onClicked: console.info("clicked on user", name);
+          onClicked: {
+            // Load UserContactCard Component
+            JS.createContactCard(name, ext, jobTitle, team, "./pictures/" + ext + ".png");
+          }
         }
       }
     }

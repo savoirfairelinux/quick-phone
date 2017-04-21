@@ -14,5 +14,6 @@ This will build an executable file called `quickPhone`
 
 ## Customize for your needs
 
-Replace the logo located in img/logo_white_text.png with your own.
+Replace the logo located in img/logo_white_text.png and img/reception_contact_picture.png with your own.
 Replace users from userList.json with your own.
+Populate pictures/ folder with your users pictures in png format. Files must be named after the sip extension of the user.
