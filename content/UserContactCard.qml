@@ -1,4 +1,5 @@
 import QtQuick 2.1
+import Process 1.0
 import "../app.js" as JS
 
 Item {
@@ -18,6 +19,7 @@ Item {
 
     // If user clic outside the user card, go back to list view and hangup if needed
     onClicked: {
+      process.terminate();
       JS.deleteContactCard(contactCard);
     }
   }
@@ -60,6 +62,7 @@ Item {
         anchors.fill: parent
         onClicked: {
           // Hang up and go back to list view
+          process.terminate();
           JS.deleteContactCard(contactCard);
         }
       }
@@ -157,9 +160,26 @@ Item {
         id: callButtonClicEvent
         anchors.fill: parent
 
+        Process {
+            id: process
+
+            onReadyRead: console.info(readAll());
+            onReadyReadStandardError: console.info(readAllStandardError());
+
+            onFinished: {
+              // Go back to home page
+              console.info('Contact has finished the call');
+              process.terminate();
+              JS.deleteContactCard(contactCard);
+              userListModelView.reset();
+              stackView.pop();
+            }
+        }
         // call the user using pjsip
         onClicked: {
           console.info("Calling sip extension:", ext);
+          process.start("./caller.py", [ "-c", "ts_7990_config.ini",
+                                          "-e", ext ]);
 
           callButton.visible = false
           callButtonClicEvent.enabled = false
@@ -194,6 +214,7 @@ Item {
         onClicked: {
           // Hang up and go back to list view
           console.info('User has finished the call');
+          process.terminate();
           JS.deleteContactCard(contactCard);
           userListModelView.reset();
           stackView.pop();
