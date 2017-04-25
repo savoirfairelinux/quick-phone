@@ -17,6 +17,7 @@ ApplicationWindow {
 
     toolBar: HeaderBar {
         id: headerBar
+        visible: false
     }
 
     StackView {
@@ -30,6 +31,23 @@ ApplicationWindow {
         }
         DirectoryPage {
           id: directoryPage
+        }
+
+        delegate: StackViewDelegate {
+          pushTransition: StackViewTransition {
+            PropertyAnimation {
+              target: enterItem
+              property: "opacity"
+              from: 0
+              to: 1
+            }
+            PropertyAnimation {
+              target: exitItem
+              property: "opacity"
+              from: 1
+              to: 0
+            }
+          }
         }
     }
 

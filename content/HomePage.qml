@@ -21,7 +21,7 @@ Component {
 
       Text {
         text: " "
-        font.pixelSize: 42
+        font.pixelSize: 80
         color: "White"
         anchors.horizontalCenter: parent.horizontalCenter
       }

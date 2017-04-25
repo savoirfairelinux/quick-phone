@@ -20,14 +20,15 @@ Item {
     // If user clic outside the user card, go back to list view and hangup if needed
     onClicked: {
       process.terminate();
-      JS.deleteContactCard(contactCard);
+      contactCard.remove();
     }
   }
 
   Rectangle {
-    width: parent.width * 4 / 5
-    height: parent.height * 2 / 3
-    anchors.centerIn: parent
+    id: card
+
+    property real widthRatio: contactCard.width * 2 / 3
+    property real heightRatio: contactCard.height * 1 / 2
 
     color: "#000000"
     border.color: "#2d3435"
@@ -37,35 +38,6 @@ Item {
     MouseArea {
       // overide onClic event for clic on the user card
       anchors.fill: parent
-    }
-
-    // Close Button
-    Rectangle {
-      width: parent.width * 1 / 20
-      height: parent.height * 1 / 20
-
-      anchors.right: parent.right
-      anchors.top: parent.top
-      anchors.rightMargin: 10
-      anchors.topMargin: 20
-
-      color: "Black"
-
-      Text {
-        font.pixelSize: 42
-        anchors.centerIn: parent
-        color: "white"
-        text: "X"
-      }
-
-      MouseArea {
-        anchors.fill: parent
-        onClicked: {
-          // Hang up and go back to list view
-          process.terminate();
-          JS.deleteContactCard(contactCard);
-        }
-      }
     }
 
     // Contact Picture holder
@@ -110,6 +82,8 @@ Item {
       anchors.top: pictureHolder.top
       anchors.left: pictureHolder.right
       anchors.leftMargin: 20
+      anchors.right: card.right
+      wrapMode: Text.WordWrap
     }
 
     // Contact job title
@@ -121,6 +95,8 @@ Item {
       anchors.top: usernameText.bottom
       anchors.left: pictureHolder.right
       anchors.leftMargin: 20
+      anchors.right: card.right
+      wrapMode: Text.WordWrap
     }
 
     // Contact team
@@ -132,6 +108,8 @@ Item {
       anchors.top: jobTitleText.bottom
       anchors.left: pictureHolder.right
       anchors.leftMargin: 20
+      anchors.right: card.right
+      wrapMode: Text.WordWrap
     }
 
     // Contact sip extension
@@ -145,12 +123,15 @@ Item {
     Rectangle {
       id: callButton
 
-      width: parent.width * 1 / 8
-      height: parent.width * 1 / 8
       color: "transparent"
 
-      x: contactCard.width * 2 / 5
-      y: contactCard.height * 2 / 5
+      anchors.top: pictureHolder.bottom
+      anchors.topMargin: 20
+      anchors.bottom: card.bottom
+      anchors.bottomMargin: 20
+      anchors.horizontalCenter: pictureHolder.horizontalCenter
+
+      width: callButton.height
 
       Image {
         anchors.fill: parent
@@ -169,7 +150,7 @@ Item {
               // Go back to home page
               console.info('Contact has finished the call');
               process.terminate();
-              JS.deleteContactCard(contactCard);
+              contactCard.remove();
               userListModelView.reset();
               stackView.pop();
             }
@@ -196,13 +177,15 @@ Item {
       id: hangupButton
 
       visible: false
-
-      width: parent.width * 1 / 8
-      height: parent.width * 1 / 8
       color: "transparent"
 
-      x: callButton.x + 2 * callButton.width
-      y: contactCard.height * 2 / 5
+      anchors.top: pictureHolder.bottom
+      anchors.topMargin: 20
+      anchors.bottom: card.bottom
+      anchors.bottomMargin: 20
+      anchors.horizontalCenter: pictureHolder.horizontalCenter
+
+      width: hangupButton.height
 
       Image {
         anchors.fill: parent
@@ -217,11 +200,60 @@ Item {
           // Hang up and go back to list view
           console.info('User has finished the call');
           process.terminate();
-          JS.deleteContactCard(contactCard);
+          contactCard.remove();
           userListModelView.reset();
           stackView.pop();
         }
       }
     }
+  }
+
+  ParallelAnimation {
+      id: onCreateAnimation
+      running: true
+      NumberAnimation { target: card; property: "width" ; duration: 200 ;
+                        from: 0; to: card.widthRatio}
+      NumberAnimation { target: card; property: "height"; duration: 200 ;
+                        from: 0; to: card.heightRatio}
+      NumberAnimation { target: card; property: "x"; duration: 200 ;
+                        from: contactCard.width  / 2; to: (contactCard.width  - card.widthRatio)  / 2}
+      NumberAnimation { target: card; property: "y"; duration: 200 ;
+                        from: contactCard.height / 2; to: (contactCard.height - card.heightRatio) / 2}
+      NumberAnimation { target: usernameText; property: "font.pixelSize"; duration: 200 ;
+                        from: 0; to: 32}
+      NumberAnimation { target: jobTitleText; property: "font.pixelSize"; duration: 200 ;
+                        from: 0; to: 20}
+      NumberAnimation { target: teamText; property: "font.pixelSize"; duration: 200 ;
+                        from: 0; to: 20}
+  }
+
+  function remove() {
+      onDeleteAnimation.running = true;
+  }
+
+  ParallelAnimation {
+      id: onDeleteAnimation
+      running: false
+      NumberAnimation { target: card; property: "width" ; duration: 200 ;
+                        from: card.widthRatio; to: 0}
+      NumberAnimation { target: card; property: "height"; duration: 200 ;
+                        from: card.heightRatio; to: 0}
+      NumberAnimation { target: card; property: "x"; duration: 200 ;
+                        from: (contactCard.width  - card.widthRatio)  / 2; to: contactCard.width  / 2}
+      NumberAnimation { target: card; property: "y"; duration: 200 ;
+                        from: (contactCard.height - card.heightRatio) / 2; to: contactCard.height / 2}
+
+      NumberAnimation { target: usernameText; property: "font.pixelSize"; duration: 200 ;
+                        from: 32; to: 0}
+      NumberAnimation { target: jobTitleText; property: "font.pixelSize"; duration: 200 ;
+                        from: 20; to: 0}
+      NumberAnimation { target: teamText; property: "font.pixelSize"; duration: 200 ;
+                        from: 20; to: 0}
+
+      onRunningChanged: {
+        if(running == false ) {
+          JS.deleteContactCard(contactCard);
+        }
+      }
   }
 }
