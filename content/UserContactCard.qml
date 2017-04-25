@@ -162,7 +162,6 @@ Item {
 
         Process {
             id: process
-
             onReadyRead: console.info(readAll());
             onReadyReadStandardError: console.info(readAllStandardError());
 
@@ -178,8 +177,11 @@ Item {
         // call the user using pjsip
         onClicked: {
           console.info("Calling sip extension:", ext);
-          process.start("./caller.py", [ "-c", "ts_7990_config.ini",
-                                          "-e", ext ]);
+          if (ext === "reception") {
+            process.start("./caller.py", [ "-c", "ts_7990_config.ini", "-r"]);
+          } else {
+            process.start("./caller.py", [ "-c", "ts_7990_config.ini", "-e", ext ]);
+          }
 
           callButton.visible = false
           callButtonClicEvent.enabled = false

@@ -19,31 +19,28 @@ Item {
       userphone: "000"
       onClicked: {
         // Load UserContactCard Component
-        JS.createContactCard("Accueil", "374", "", "", "./img/reception_contact_picture.png");
+        JS.createContactCard("Accueil", "reception", "", "", "./img/reception_contact_picture.png");
       }
     }
 
-    ScrollView {
-      anchors.fill: parent
+    ListView {
+      id: userListModelView
 
-      ListView {
-        id: userListModelView
+      width: parent.width
+      anchors.top: defaultContact.bottom
+      anchors.bottom: parent.bottom
 
-        model: userListModel
-        anchors.top: defaultContact.bottom
-        anchors.bottom: parent.bottom
-        width: parent.width
+      model: userListModel
 
-        signal reset
-        onReset: positionViewAtBeginning();
+      signal reset
+      onReset: positionViewAtBeginning();
 
-        delegate: UserContactItem {
-          username: name
-          userphone: ext
-          onClicked: {
-            // Load UserContactCard Component
-            JS.createContactCard(name, ext, jobTitle, team, "./pictures/" + ext + ".png");
-          }
+      delegate: UserContactItem {
+        username: name
+        userphone: ext
+        onClicked: {
+          // Load UserContactCard Component
+          JS.createContactCard(name, ext, jobTitle, team, "./pictures/" + ext + ".png");
         }
       }
     }
