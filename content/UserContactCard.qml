@@ -17,10 +17,12 @@ Item {
     //MouseArea will fill the zone behind the user card
     anchors.fill: parent
 
-    // If user clic outside the user card, go back to list view and hangup if needed
+    // If user clic outside the user card and no call in progress,
+    // go back to list view.
     onClicked: {
-      process.terminate();
-      contactCard.remove();
+      if (callButton.visible) {
+        contactCard.remove();
+      }
     }
   }
 
@@ -47,8 +49,8 @@ Item {
       width: parent.height * 2 / 5
       height: parent.height * 2 / 5
 
-      anchors.verticalCenter: parent.verticalCenter
-      x: parent.width * 1/10
+      anchors.verticalCenter: card.verticalCenter
+      x: parent.width * 1/ 12
 
       color: "white"
 
@@ -82,7 +84,8 @@ Item {
       anchors.top: pictureHolder.top
       anchors.left: pictureHolder.right
       anchors.leftMargin: 20
-      anchors.right: card.right
+      anchors.right: callButton.left
+      anchors.rightMargin: 20
       wrapMode: Text.WordWrap
     }
 
@@ -95,7 +98,8 @@ Item {
       anchors.top: usernameText.bottom
       anchors.left: pictureHolder.right
       anchors.leftMargin: 20
-      anchors.right: card.right
+      anchors.right: callButton.left
+      anchors.rightMargin: 20
       wrapMode: Text.WordWrap
     }
 
@@ -108,7 +112,8 @@ Item {
       anchors.top: jobTitleText.bottom
       anchors.left: pictureHolder.right
       anchors.leftMargin: 20
-      anchors.right: card.right
+      anchors.right: callButton.left
+      anchors.rightMargin: 20
       wrapMode: Text.WordWrap
     }
 
@@ -125,13 +130,11 @@ Item {
 
       color: "transparent"
 
-      anchors.top: pictureHolder.bottom
-      anchors.topMargin: 20
-      anchors.bottom: card.bottom
-      anchors.bottomMargin: 20
-      anchors.horizontalCenter: pictureHolder.horizontalCenter
-
-      width: callButton.height
+      anchors.right: parent.right
+      anchors.rightMargin: 20
+      anchors.verticalCenter: pictureHolder.verticalCenter
+      width: pictureHolder.width * 4 / 5
+      height: callButton.width
 
       Image {
         anchors.fill: parent
@@ -141,20 +144,6 @@ Item {
         id: callButtonClicEvent
         anchors.fill: parent
 
-        Process {
-            id: process
-            onReadyRead: console.info(readAll());
-            onReadyReadStandardError: console.info(readAllStandardError());
-
-            onFinished: {
-              // Go back to home page
-              console.info('Contact has finished the call');
-              process.terminate();
-              contactCard.remove();
-              userListModelView.reset();
-              stackView.pop();
-            }
-        }
         // call the user using pjsip
         onClicked: {
           console.info("Calling sip extension:", ext);
@@ -179,13 +168,10 @@ Item {
       visible: false
       color: "transparent"
 
-      anchors.top: pictureHolder.bottom
-      anchors.topMargin: 20
-      anchors.bottom: card.bottom
-      anchors.bottomMargin: 20
-      anchors.horizontalCenter: pictureHolder.horizontalCenter
-
-      width: hangupButton.height
+      anchors.verticalCenter: callButton.verticalCenter
+      anchors.horizontalCenter: callButton.horizontalCenter
+      width: callButton.width
+      height: callButton.height
 
       Image {
         anchors.fill: parent
@@ -206,6 +192,21 @@ Item {
         }
       }
     }
+  }
+
+  Process {
+      id: process
+      onReadyRead: console.info(readAll());
+      onReadyReadStandardError: console.info(readAllStandardError());
+
+      onFinished: {
+        // Go back to home page
+        console.info('Contact has finished the call');
+        process.terminate();
+        contactCard.remove();
+        userListModelView.reset();
+        stackView.pop();
+      }
   }
 
   ParallelAnimation {
