@@ -15,6 +15,10 @@ Component {
       }
     }
 
+    BackgroundVideo {
+      videoSource: "../intro_video.mp4"
+    }
+
     Column {
       anchors.fill: parent
       spacing: 30
