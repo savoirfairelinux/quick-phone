@@ -26,32 +26,13 @@ BorderImage {
         MouseArea {
             id: backmouse
             anchors.fill: parent
-            anchors.margins: -10
-            
+            anchors.margins: -50
+
             onClicked: {
               stackView.pop();
               directoryPage.reset();
               headerBar.visible = false;
             }
         }
-    }
-
-    Text {
-      id: timeText
-      color: "white"
-      font.pixelSize: 42
-
-      anchors.verticalCenter: parent.verticalCenter
-      anchors.right: parent.right
-      anchors.rightMargin: 30
-
-      text: Qt.formatTime(new Date(),"hh:mm:ss AP")
-      Timer {
-        id: timer
-        interval: 1000
-        repeat: true
-        running: true
-        onTriggered: timeText.text =  Qt.formatTime(new Date(),"hh:mm:ss AP");
-      }
     }
 }
