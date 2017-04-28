@@ -14,7 +14,7 @@ Item {
       id: defaultContact
       z: 500 // always on top of list
 
-      width: parent.width - 30
+      width: parent.width
       username: "Accueil"
       userphone: "000"
       onClicked: {

@@ -7,7 +7,7 @@ ApplicationWindow {
     id: appWindow
 
     visible: true
-    width: 800
+    width: 1024
     height: 600
 
     Rectangle {
