@@ -20,7 +20,9 @@ Item {
       onClicked: {
         // Load UserContactCard Component
         JS.createContactCard("Accueil", "reception", "", "", "./img/reception_contact_picture.png");
+        directoryIddleTimer.stop();
       }
+      onPressed: directoryIddleTimer.restart();
     }
 
     ListView {
@@ -41,7 +43,9 @@ Item {
         onClicked: {
           // Load UserContactCard Component
           JS.createContactCard(name, ext, jobTitle, team, "./pictures/" + ext + ".png");
+          directoryIddleTimer.stop();
         }
+        onPressed: directoryIddleTimer.restart();
       }
     }
 }

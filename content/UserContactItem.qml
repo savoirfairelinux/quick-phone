@@ -10,6 +10,8 @@ Item {
     property alias userphone: userphoneText.text
 
     signal clicked
+    signal pressed
+
     Rectangle {
         anchors.fill: parent
         color: "black"
@@ -54,5 +56,6 @@ Item {
         id: mouseArea
         anchors.fill: parent
         onClicked: contactUser.clicked();
+        onPressed: contactUser.pressed();
     }
 }

@@ -31,6 +31,21 @@ ApplicationWindow {
         }
         DirectoryPage {
           id: directoryPage
+
+          Timer {
+            id: directoryIddleTimer
+
+            interval: 15000
+            running: false
+            repeat: true
+
+            onTriggered: {
+              console.info("App has been iddle for " + directoryIddleTimer.interval / 1000 + "seconds")
+              directoryPage.reset();
+              headerBar.visible = false;
+              stackView.pop();
+            }
+          }
         }
 
         delegate: StackViewDelegate {

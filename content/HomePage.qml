@@ -12,6 +12,7 @@ Component {
       onClicked: {
         stackView.push(directoryPage);
         headerBar.visible = true;
+        directoryIddleTimer.restart();
       }
     }
 

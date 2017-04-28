@@ -40,6 +40,9 @@ Item {
     MouseArea {
       // overide onClic event for clic on the user card
       anchors.fill: parent
+      onClicked: {
+        iddleTimer.restart();
+      }
     }
 
     // Contact Picture holder
@@ -188,6 +191,7 @@ Item {
           process.terminate();
           contactCard.remove();
           userListModelView.reset();
+          headerBar.visible = false;
           stackView.pop();
         }
       }
@@ -256,5 +260,27 @@ Item {
           JS.deleteContactCard(contactCard);
         }
       }
+  }
+
+  Timer {
+    id: iddleTimer
+
+    interval: 15000
+    running: true
+    repeat: true
+
+    onTriggered: {
+      if (hangupButton.visible) {
+        // Call is in progress
+        iddleTimer.restart();
+        return;
+      }
+
+      console.info("App has been iddle for " + iddleTimer.interval / 1000 + "seconds")
+      contactCard.remove();
+      userListModelView.reset();
+      headerBar.visible = false;
+      stackView.pop();
+    }
   }
 }
