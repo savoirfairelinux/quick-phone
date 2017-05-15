@@ -209,6 +209,7 @@ Item {
         process.terminate();
         contactCard.remove();
         userListModelView.reset();
+        headerBar.visible = false;
         stackView.pop();
       }
   }
