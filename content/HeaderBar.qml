@@ -35,4 +35,23 @@ BorderImage {
             }
         }
     }
+
+    Text {
+      id: timeText
+      color: "white"
+      font.pixelSize: 42
+
+      anchors.verticalCenter: parent.verticalCenter
+      anchors.right: parent.right
+      anchors.rightMargin: 30
+
+      Timer {
+        id: timer
+        interval: 1000
+        repeat: true
+        running: true
+        triggeredOnStart: true
+        onTriggered: timeText.text = Qt.formatDateTime(new Date(),"dddd d MMMM hh:mm")
+      }
+    }
 }
