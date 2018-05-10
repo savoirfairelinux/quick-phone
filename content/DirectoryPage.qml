@@ -1,5 +1,6 @@
-import QtQuick 2.1
-import QtQuick.Controls 1.0
+import QtQuick 2.7
+import QtQuick.Controls 2.0
+
 import "../content"
 import "../app.js" as JS
 
@@ -10,29 +11,14 @@ Item {
     signal reset
     onReset: userListModelView.reset();
 
-    UserContactItem {
-      id: defaultContact
-      z: 500 // always on top of list
-
-      width: parent.width
-      username: "Accueil"
-      userphone: "000"
-      onClicked: {
-        // Load UserContactCard Component
-        JS.createContactCard("Accueil", "reception", "", "", "./img/reception_contact_picture.png");
-        directoryIddleTimer.stop();
-      }
-      onPressed: directoryIddleTimer.restart();
-    }
-
     ListView {
       id: userListModelView
 
-      width: parent.width
-      anchors.top: defaultContact.bottom
-      anchors.bottom: parent.bottom
+      anchors.fill: parent
 
       model: userListModel
+
+      clip: true
 
       signal reset
       onReset: positionViewAtBeginning();
@@ -42,10 +28,25 @@ Item {
         userphone: ext
         onClicked: {
           // Load UserContactCard Component
-          JS.createContactCard(name, ext, jobTitle, team, "./pictures/" + ext + ".png");
           directoryIddleTimer.stop();
+          return loadContactCard(name, ext, jobTitle, team, "./pictures/" + ext + ".png");
         }
         onPressed: directoryIddleTimer.restart();
       }
     }
+
+  signal loadContactCard(string name, real ext, string jobTitle, string team, string pictureLocation)
+  onLoadContactCard: {
+    contactCard.name = name;
+    contactCard.ext = ext;
+    contactCard.jobTitle = jobTitle;
+    contactCard.team = team;
+    contactCard.pictureLocation = pictureLocation;
+
+    contactCard.loader.active = true
+  }
+
+  ContactCardLoader {
+    id: contactCard
+  }
 }
