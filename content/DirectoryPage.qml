@@ -28,10 +28,25 @@ Item {
         userphone: ext
         onClicked: {
           // Load UserContactCard Component
-          JS.createContactCard(name, ext, jobTitle, team, "./pictures/" + ext + ".png");
           directoryIddleTimer.stop();
+          return loadContactCard(name, ext, jobTitle, team, "./pictures/" + ext + ".png");
         }
         onPressed: directoryIddleTimer.restart();
       }
     }
+
+  signal loadContactCard(string name, real ext, string jobTitle, string team, string pictureLocation)
+  onLoadContactCard: {
+    contactCard.name = name;
+    contactCard.ext = ext;
+    contactCard.jobTitle = jobTitle;
+    contactCard.team = team;
+    contactCard.pictureLocation = pictureLocation;
+
+    contactCard.loader.active = true
+  }
+
+  ContactCardLoader {
+    id: contactCard
+  }
 }

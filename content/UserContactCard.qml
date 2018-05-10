@@ -1,17 +1,46 @@
 import QtQuick 2.7
+import QtQuick.Controls 2.0
+import QtQuick.Controls.Styles 2.0
 import Process 1.0
-import "../app.js" as JS
 
 Item {
   id: contactCard
 
-  property alias name: usernameText.text
-  property alias ext: userphoneText.text
-  property alias jobTitle: jobTitleText.text
-  property alias team: teamText.text
-  property alias pictureLocation: contactPicture.source
+  signal closeContactCard
+
+  property string name
+  property real ext
+  property string jobTitle
+  property string team
+  property string pictureLocation
 
   anchors.fill: parent
+
+  signal componentLoaded(string name, real ext, string jobTitle, string team, string pictureLocation)
+
+  onComponentLoaded: {
+    contactCard.name = name;
+    contactCard.ext = ext;
+    contactCard.jobTitle = jobTitle;
+    contactCard.team = team;
+    contactCard.pictureLocation = pictureLocation;
+  }
+
+  Process {
+      id: process
+      onReadyRead: console.info(readAll());
+      onReadyReadStandardError: console.info(readAllStandardError());
+
+      onFinished: {
+        // Go back to home page
+        console.info('Contact has finished the call');
+        process.terminate();
+        contactCard.remove();
+        userListModelView.reset();
+        headerBar.visible = false;
+        stackView.pop();
+      }
+  }
 
   MouseArea {
     //MouseArea will fill the zone behind the user card
@@ -20,7 +49,7 @@ Item {
     // If user clic outside the user card and no call in progress,
     // go back to list view.
     onClicked: {
-      if (callButton.visible) {
+      if (sliderButton.state === "red") {
         contactCard.remove();
       }
     }
@@ -30,7 +59,7 @@ Item {
     id: card
 
     property real widthRatio: contactCard.width * 2 / 3
-    property real heightRatio: contactCard.height * 1 / 2
+    property real heightRatio: contactCard.height * 2 / 3
 
     color: "#000000"
     border.color: "#2d3435"
@@ -52,8 +81,8 @@ Item {
       width: parent.height * 2 / 5
       height: parent.height * 2 / 5
 
-      anchors.verticalCenter: card.verticalCenter
-      x: parent.width * 1/ 12
+      y: parent.width * 1/10
+      x: parent.width * 1/10
 
       color: "white"
 
@@ -63,7 +92,7 @@ Item {
         anchors.centerIn: parent
         height: parent.height
         fillMode: Image.PreserveAspectFit
-        source: "../img/default_contact_picture.png"
+        source: pictureLocation ? pictureLocation : "../img/default_contact_picture.png"
 
         onStatusChanged: {
           // if we cannot load contact picture, use default image
@@ -83,11 +112,11 @@ Item {
       id: usernameText
       color: "white"
       font.pixelSize: 32
-      text: "Name"
+      text: name ? name : "Name"
       anchors.top: pictureHolder.top
       anchors.left: pictureHolder.right
       anchors.leftMargin: 20
-      anchors.right: callButton.left
+      anchors.right: callImage.right
       anchors.rightMargin: 20
       wrapMode: Text.WordWrap
     }
@@ -97,11 +126,11 @@ Item {
       id: jobTitleText
       color: "white"
       font.pixelSize: 20
-      text: "Title"
+      text: jobTitle ? jobTitle : "Title"
       anchors.top: usernameText.bottom
       anchors.left: pictureHolder.right
       anchors.leftMargin: 20
-      anchors.right: callButton.left
+      anchors.right: callImage.right
       anchors.rightMargin: 20
       wrapMode: Text.WordWrap
     }
@@ -111,11 +140,11 @@ Item {
       id: teamText
       color: "white"
       font.pixelSize: 20
-      text: "team"
+      text: team ? team : "Team"
       anchors.top: jobTitleText.bottom
       anchors.left: pictureHolder.right
       anchors.leftMargin: 20
-      anchors.right: callButton.left
+      anchors.right: callImage.right
       anchors.rightMargin: 20
       wrapMode: Text.WordWrap
     }
@@ -123,71 +152,70 @@ Item {
     // Contact sip extension
     Text {
       id: userphoneText
-      text: "ext"
+      text: ext ? ext : "ext"
       visible: false
     }
 
     // Call button
-    Rectangle {
-      id: callButton
+    Slider {
+      id: sliderButton
 
-      color: "transparent"
+      property string imgSource: "../img/phone_call.png"
+      property string sliderText: "#1233 >>>"
 
-      anchors.right: parent.right
-      anchors.rightMargin: 20
-      anchors.verticalCenter: pictureHolder.verticalCenter
-      width: pictureHolder.width * 4 / 5
-      height: callButton.width
+      anchors.top: pictureHolder.bottom
+      anchors.topMargin: 20
+      anchors.bottom: card.bottom
+      anchors.bottomMargin: 20
+      anchors.horizontalCenter: parent.horizontalCenter
+      width: parent.width * 2 / 3
 
-      Image {
-        anchors.fill: parent
-        source: "../img/phone_call.png"
-      }
-      MouseArea {
-        id: callButtonClicEvent
-        anchors.fill: parent
+      state: "green"
 
-        // call the user using pjsip
-        onClicked: {
+      states: [
+        State {
+          name: "green"
+          PropertyChanges { target: sliderButton; imgSource: "../img/phone_call.png"}
+          PropertyChanges { target: sliderButton; sliderText: "Slide to call"}
+        },
+        State {
+          name: "red"
+          PropertyChanges { target: sliderButton; imgSource: "../img/phone_hangup.png"}
+          PropertyChanges { target: sliderButton; sliderText: "Slide to hangup"}
+        }
+      ]
+
+      value: 0
+      updateValueWhileDragging : false
+
+      onValueChanged: {
+        // In 'no call' state
+        if (sliderButton.state === "green") {
+          if (sliderButton.value < 1) {
+            sliderButton.value = 0;
+            return;
+          }
+
+          sliderButton.state = "red";
+
           console.info("Calling sip extension:", ext);
           if (ext === "reception") {
             process.start("./caller.py", [ "-c", "ts_7990_config.ini", "-r"]);
           } else {
             process.start("./caller.py", [ "-c", "ts_7990_config.ini", "-e", ext ]);
           }
-
-          callButton.visible = false
-          callButtonClicEvent.enabled = false
-          hangupButton.visible = true
-          hangupButtonClicEvent.enabled = true
         }
-      }
-    }
 
-    // Hangup Button
-    Rectangle {
-      id: hangupButton
+        // In 'call' state
+        if (sliderButton.state === "red") {
+          if (sliderButton.value > 0) {
+            sliderButton.value = 1;
+            return;
+          }
 
-      visible: false
-      color: "transparent"
-
-      anchors.verticalCenter: callButton.verticalCenter
-      anchors.horizontalCenter: callButton.horizontalCenter
-      width: callButton.width
-      height: callButton.height
-
-      Image {
-        anchors.fill: parent
-        source: "../img/phone_hangup.png"
-      }
-      MouseArea {
-        id: hangupButtonClicEvent
-        anchors.fill: parent
-        enabled: false
-
-        onClicked: {
           // Hang up and go back to list view
           console.info('User has finished the call');
+          sliderButton.state = "green";
           process.terminate();
           contactCard.remove();
           userListModelView.reset();
@@ -195,23 +223,34 @@ Item {
           stackView.pop();
         }
       }
-    }
-  }
 
-  Process {
-      id: process
-      onReadyRead: console.info(readAll());
-      onReadyReadStandardError: console.info(readAllStandardError());
+      style: SliderStyle {
+        groove: Rectangle {
+          implicitWidth: sliderButton.width
+          implicitHeight: sliderButton.height
+          color: "grey"
+          radius: 180
 
-      onFinished: {
-        // Go back to home page
-        console.info('Contact has finished the call');
-        process.terminate();
-        contactCard.remove();
-        userListModelView.reset();
-        headerBar.visible = false;
-        stackView.pop();
+          Text {
+            anchors.centerIn: parent
+            color: "Black"
+            font.pixelSize: 20
+            text: sliderButton.sliderText
+          }
+        }
+        handle: Rectangle {
+          anchors.centerIn: parent
+          color: "transparent"
+          implicitWidth: sliderButton.height
+          implicitHeight: sliderButton.height
+          Image {
+            id: callImage
+            anchors.fill: parent
+            source: sliderButton.imgSource
+          }
+        }
       }
+    }
   }
 
   ParallelAnimation {
@@ -258,7 +297,7 @@ Item {
 
       onRunningChanged: {
         if(running == false ) {
-          JS.deleteContactCard(contactCard);
+          closeContactCard();
         }
       }
   }
@@ -271,13 +310,12 @@ Item {
     repeat: true
 
     onTriggered: {
-      if (hangupButton.visible) {
-        // Call is in progress
+      if (sliderButton.state === "red") {
         iddleTimer.restart();
         return;
       }
 
-      console.info("App has been iddle for " + iddleTimer.interval / 1000 + "seconds")
+      console.info("App has been iddle for" + iddleTimer.interval / 1000 + "seconds")
       contactCard.remove();
       userListModelView.reset();
       headerBar.visible = false;
