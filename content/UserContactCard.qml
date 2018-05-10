@@ -1,4 +1,4 @@
-import QtQuick 2.1
+import QtQuick 2.7
 import Process 1.0
 import "../app.js" as JS
 
