@@ -15,6 +15,7 @@ Item {
       id: userListModelView
 
       anchors.fill: parent
+      currentIndex: -1
 
       model: userListModel
 
@@ -24,12 +25,19 @@ Item {
       onReset: positionViewAtBeginning();
 
       delegate: UserContactItem {
-        username: name
-        userphone: ext
+        id: item
+        name_: name
+        ext_: ext
+        jobTitle_: jobTitle
+        team_: team
+        pictureLocation_: "../assets/pictures/" + ext + ".png"
+
+        selected : ListView.isCurrentItem
         onClicked: {
-          // Load UserContactCard Component
+          userListModelView.currentIndex = userListModelView.currentIndex === index ? -1 : index;
+          userListModelView.positionViewAtIndex(userListModelView.currentIndex, ListView.Contain)
           directoryIddleTimer.stop();
-          return loadContactCard(name, ext, jobTitle, team, "../assets/pictures/" + ext + ".png");
+          item.state = ListView.isCurrentItem ? "Selected" : "None";
         }
         onPressed: directoryIddleTimer.restart();
       }

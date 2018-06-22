@@ -10,10 +10,7 @@ ApplicationWindow {
     width: 1024
     height: 600
 
-    Rectangle {
-        color: "#000000"
-        anchors.fill: parent
-    }
+    color: "#293133"
 
     toolBar: HeaderBar {
         id: headerBar

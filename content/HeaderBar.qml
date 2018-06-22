@@ -1,9 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 
-BorderImage {
-    border.bottom: 8
-    source: "../img/toolbar.png"
+Item {
     width: parent.width
     height: 100
 
@@ -34,6 +32,14 @@ BorderImage {
               headerBar.visible = false;
             }
         }
+    }
+
+    Rectangle {
+        anchors.bottom: parent.bottom
+        width: parent.width
+        height: 1
+        color : colors.white
+        opacity: 0.42
     }
 
     Text {
