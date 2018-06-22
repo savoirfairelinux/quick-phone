@@ -29,7 +29,7 @@ Item {
         onClicked: {
           // Load UserContactCard Component
           directoryIddleTimer.stop();
-          return loadContactCard(name, ext, jobTitle, team, "./pictures/" + ext + ".png");
+          return loadContactCard(name, ext, jobTitle, team, "../assets/picture" + ext + ".png");
         }
         onPressed: directoryIddleTimer.restart();
       }
