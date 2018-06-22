@@ -200,9 +200,9 @@ Item {
 
           console.info("Calling sip extension:", ext);
           if (ext === "reception") {
-            process.start("./caller.py", [ "-c", "ts_7990_config.ini", "-r"]);
+            process.start("./caller.py", [ "-c", "./assets/config.ini", "-r"]);
           } else {
-            process.start("./caller.py", [ "-c", "ts_7990_config.ini", "-e", ext ]);
+            process.start("./caller.py", [ "-c", "./assets/config.ini", "-e", ext ]);
           }
         }
 

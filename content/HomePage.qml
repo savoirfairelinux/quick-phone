@@ -17,7 +17,7 @@ Component {
     }
 
     BackgroundVideo {
-      videoSource: "../intro_video.mp4"
+      videoSource:  "../assets/intro_video.mp4"
     }
 
     Column {

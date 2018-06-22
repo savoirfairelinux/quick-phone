@@ -1,6 +1,6 @@
 function load() {
   userListModel.clear();
-  return openFile("userList.json");
+  return openFile("./assets/userList.json");
 }
 
 function openFile(fileUrl) {
