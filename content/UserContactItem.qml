@@ -75,6 +75,7 @@ Item {
       Transition {
         from: "Selected"; to: "Calling"
         SequentialAnimation {
+          ScriptAction { script: directoryIddleTimer.stop(); }
           PropertyAction {target: selectItemArea; property: "enabled"; value: false}
           PropertyAction {target: userListModelView; property: "interactive"; value: false}
           ParallelAnimation {
@@ -88,6 +89,7 @@ Item {
       Transition {
         from: "Calling"; to: "None"
         SequentialAnimation {
+          ScriptAction { script: directoryIddleTimer.restart(); }
           ParallelAnimation {
             PropertyAction {target: jobTitle; property: "visible"; value: false}
             PropertyAction {target: team; property: "visible"; value: false}
@@ -100,7 +102,7 @@ Item {
           }
           PropertyAction {target: contactUser; property: "selected"; value: false}
           PropertyAction {target: userListModelView; property: "interactive"; value: true}
-            PropertyAction {target: selectItemArea; property: "enabled"; value: true}
+          PropertyAction {target: selectItemArea; property: "enabled"; value: true}
         }
       }
     ]
