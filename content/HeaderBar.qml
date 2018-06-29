@@ -5,8 +5,9 @@ Item {
     width: parent.width
     height: 100
 
+    property alias backButton: _backButton
     Rectangle {
-        id: backButton
+        id: _backButton
         width: opacity ? 60 : 0
         anchors.left: parent.left
         anchors.leftMargin: 20
