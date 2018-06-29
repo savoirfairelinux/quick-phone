@@ -54,6 +54,7 @@ Item {
             PropertyAction {target: jobTitle; property: "visible"; value: true}
             PropertyAction {target: team; property: "visible"; value: true}
             PropertyAction {target: contactPicture; property: "visible"; value: true}
+            ScriptAction { script: userListModelView.positionViewAtIndex(userListModelView.currentIndex, ListView.Contain); }
           }
         }
       },
