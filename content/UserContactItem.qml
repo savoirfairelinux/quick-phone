@@ -82,8 +82,8 @@ Item {
           ParallelAnimation {
             NumberAnimation {target: contactUser; property: "height"; to: userListModelView.height; duration: 200}
             NumberAnimation {target: userListModelView; property: "contentY"; to: (userListModelView.currentIndex) * 88; duration: 200}
-            NumberAnimation {target: contactPicture; property: "x"; to: 80; duration: 200}
-            NumberAnimation {target: username; property: "x"; to: 230; duration: 200}
+            NumberAnimation {target: contactPicture; property: "x"; to: 150; duration: 200}
+            NumberAnimation {target: username; property: "x"; to: 300; duration: 200}
           }
         }
       },
