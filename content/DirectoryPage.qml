@@ -22,7 +22,10 @@ Item {
       clip: true
 
       signal reset
-      onReset: positionViewAtBeginning();
+      onReset: {
+        positionViewAtBeginning();
+        currentIndex = -1;
+      }
 
       delegate: UserContactItem {
         id: item
@@ -35,10 +38,14 @@ Item {
         selected : ListView.isCurrentItem
         onClicked: {
           userListModelView.currentIndex = userListModelView.currentIndex === index ? -1 : index;
-          directoryIddleTimer.stop();
           item.state = ListView.isCurrentItem ? "Selected" : "None";
         }
         onPressed: directoryIddleTimer.restart();
+
+        Connections{
+          target: userListModelView
+          onReset: state = "None";
+        }
       }
     }
 
