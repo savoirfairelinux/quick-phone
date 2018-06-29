@@ -35,7 +35,6 @@ Item {
         selected : ListView.isCurrentItem
         onClicked: {
           userListModelView.currentIndex = userListModelView.currentIndex === index ? -1 : index;
-          userListModelView.positionViewAtIndex(userListModelView.currentIndex, ListView.Contain)
           directoryIddleTimer.stop();
           item.state = ListView.isCurrentItem ? "Selected" : "None";
         }
