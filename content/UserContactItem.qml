@@ -85,6 +85,7 @@ Item {
             NumberAnimation {target: contactPicture; property: "x"; to: 150; duration: 200}
             NumberAnimation {target: username; property: "x"; to: 300; duration: 200}
           }
+          ScriptAction { script: userListModelView.positionViewAtIndex(userListModelView.currentIndex, ListView.Contain); }
         }
       },
       Transition {
